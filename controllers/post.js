@@ -1,3 +1,4 @@
+const { Post } = require("../models");
 const db = require("../models");
 
 const index = (req, res) => {
@@ -13,7 +14,7 @@ const index = (req, res) => {
 };
 
 const show = (req, res) => {
-  db.Post.create(req.body, (err, foundPost) => {
+  db.Post.findById(req.body, (err, foundPost) => {
     if (err) console.log("Error in post#show:", err);
 
     // if (!foundPost) return res.status(200).json({"message": "No post with that id found in db"});
@@ -23,9 +24,11 @@ const show = (req, res) => {
 };
 
 const create = (req, res) => {
-  const userId = req.user_id;
+  let userId = req.userId;
+
   db.Post.create(req.body, (err, createdPost) => {
     if (err) console.log("Error in post#create:", err);
+    // db.User.findById(userId)
     createdPost.user = userId;
     createdPost.save();
     res.status(201).json({ post: createdPost });
@@ -33,6 +36,7 @@ const create = (req, res) => {
 };
 
 const update = (req, res) => {
+  console.log(req.body)
   db.Post.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -40,21 +44,27 @@ const update = (req, res) => {
     (err, updatedPost) => {
       if (err) console.log("Error in posts#update:", err);
 
-      // if(!updatedPost) return res.status(200).json({ "message": "No post with that id found in db" });
-
       res.status(200).json({ post: updatedPost });
     }
   );
 };
 
+// TODO MAKE SURE THE COMMENTS AND ID IS ALSO DELETED
 const destroy = (req, res) => {
+
+  let comments = db.Post.comments;
+
   db.Post.findByIdAndDelete(req.params.id, (err, deletedPost) => {
     if (err) console.log("Error in post#destroy:", err);
 
     // if(!deletedPost) return res.status(200).json({ "message": "No post with that id found in db" });
-
+    for (let i = 0; i < deletedPost.comments.length; i++) {
+      let comment = deletedPost.comments[i] = comment;
+      comment.findByIdAndDelete(req.params.id)
+    }
     res.status(200).json({ post: deletedPost });
   });
+  
 };
 
 module.exports = {

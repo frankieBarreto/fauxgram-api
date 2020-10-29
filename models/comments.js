@@ -7,7 +7,7 @@ const commentSchema = new Schema(
     votes: { type: Number, default: 0 },
     user: { type: mongoose.Schema.Types.Objects, ref: "User" },
     post: { type: mongoose.Schema.Types.Objects, ref: "Post" },
-    comment: { type: mongoose.Schema.Types.Objects, ref: "Comment" },
+    replies: [{ type: mongoose.Schema.Types.Objects, ref: "Comment" }],
   },
   {
     timestamps: true,

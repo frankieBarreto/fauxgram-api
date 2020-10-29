@@ -2,22 +2,20 @@ const db = require("../models");
 
 const index = (req, res) => {
     db.Comment.find({}, (err, foundComments) => {
-        if(err) console.log('Error in post#index:', err);
+        if(err) console.log('Error in comments#index:', err);
 
-        if(!foundComment.length) return res.status(200).json({"message": "No comment found in db"});
 
         res.status(200).json({ "comment": foundComments });
     });
 };
 
 const show = (req, res) => {
-    db.Comment.create(req.body, (err, foundComment)=> {
+    db.Comment.findById(req.body, (err, foundComment)=> {
         if (err) console.log('Error in comment#show:', err);
-
-        if (!foundComment) return res.status(200).json({"message": "No comment with that id found in db"});
 
         res.status(200).json({ "comment": foundComment })
     });
+
 }
 
 const create = (req, res) => {

@@ -31,7 +31,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const foundUser = await await db.User.findOne({ email: req.body.email });
+    const foundUser = await db.User.findOne({ email: req.body.email });
 
     console.log(foundUser);
 

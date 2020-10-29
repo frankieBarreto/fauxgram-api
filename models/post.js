@@ -15,6 +15,7 @@ const postSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // User model
   },
+  likes: Number,
 });
 
 var Post = mongoose.model("Post", postSchema);

@@ -8,8 +8,8 @@ const ctrl = require('../controllers');
 router.get('/', ctrl.post.index);
 router.get('/:id', ctrl.post.show);
 router.post('/', authRequired, ctrl.post.create);
-router.put('/:id', ctrl.post.update);
-router.delete('/:id', ctrl.post.destroy);
+router.put('/:id', authRequired, ctrl.post.update);
+router.delete('/:id', authRequired, ctrl.post.destroy);
 
 // exports
 module.exports = router;
