@@ -19,6 +19,7 @@ const show = (req, res) => {
 }
 
 const create = (req, res) => {
+    console.log(re.body)
     db.Comment.create(req.body, (err, savedComment) => {
         if (err) console.log('Error in comment#create:', err);
 
