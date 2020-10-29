@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const commentSchema = new Schema(
   {
-    body: { type: String, require: true, minlength: 2, maxlength: 1000 },
-    votes: { type: Number, default: 0 },
+    content: { type: String, require: true, minlength: 2, maxlength: 1000 },
+    likes: { type: Number, default: 0 },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     post: { type: mongoose.Schema.Types.ObjectId, ref: "Post" },
     replies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],

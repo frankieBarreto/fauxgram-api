@@ -3,7 +3,7 @@ const db = require("../models");
 
 const index = (req, res) => {
   db.Post.find({})
-    .populate("user")
+    .populate("user comments")
     .exec((err, foundPosts) => {
       if (err) console.log("Error in post#index:", err);
 
@@ -36,7 +36,6 @@ const create = (req, res) => {
 };
 
 const update = (req, res) => {
-  console.log(req.body)
   db.Post.findByIdAndUpdate(
     req.params.id,
     req.body,
@@ -58,10 +57,10 @@ const destroy = (req, res) => {
     if (err) console.log("Error in post#destroy:", err);
 
     // if(!deletedPost) return res.status(200).json({ "message": "No post with that id found in db" });
-    for (let i = 0; i < deletedPost.comments.length; i++) {
-      let comment = deletedPost.comments[i] = comment;
-      comment.findByIdAndDelete(req.params.id)
-    }
+    // for (let i = 0; i < deletedPost.comments.length; i++) {
+    //   let comment = deletedPost.comments[i] = comment;
+    //   comment.findByIdAndDelete(req.params.id)
+    // }
     res.status(200).json({ post: deletedPost });
   });
   
