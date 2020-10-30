@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const register = async (req, res) => {
     try {
+      console.log(`@try in register`)
         const foundUser = await db.User.findOne({ email: req.body.email });
 
         if(foundUser) {
@@ -21,9 +22,10 @@ const register = async (req, res) => {
             .status(201)
             .json({status: 201, message: "success", createdUser });
     } catch (err) {
+      console.log(err)
         return res.status(500).json({
             status: 500,
-            message: "Something went wrong. PLease try again",
+            message: "Something went wrong. Please try again #register",
         });
     }
 };
@@ -55,7 +57,7 @@ const login = async (req, res) => {
         },
         "super_secret_key",
         {
-          expiresIn: "1h",
+          expiresIn: "70h",// TODO fix later
         }
       );
 
@@ -76,7 +78,7 @@ const login = async (req, res) => {
     console.log(error);
     return res.status(500).json({
       status: 500,
-      message: "Something went wrong. Please try again",
+      message: "Something went wrong. Please try again #login",
     });
   }
 };

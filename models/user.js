@@ -16,6 +16,9 @@ const userSchema = new Schema(
     password: { type: String, required: true },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
   },
+  {
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  },
   { timestamps: true }
 );
 
