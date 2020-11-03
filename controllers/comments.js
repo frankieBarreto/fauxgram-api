@@ -18,14 +18,17 @@ const show = (req, res) => {
   });
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   let userId = req.userId;
+  let user = await db.User.findById(userId)
+  console.log(userId, "************************", user)
   db.Comment.create(req.body, (err, createdComment) => {
       if (err) return console.log("Error in comment#create:", err);
-      
+      user.comments.push(createdComment.id);
       createdComment.user = userId;
+      user.save();
       createdComment.save();
-      // find the post id and push the model into the comments array
+
       db.Post.findById(createdComment.post, (err, foundPost)=>{
           if(err) return console.log("Error in comment/post#create:",err)
           foundPost.comments.push(createdComment)
@@ -49,12 +52,14 @@ const update = (req, res) => {
 };
 
 //TODO make sure once post is deleted comments are also removed
+// delGame.dev.forEach(async (dev) => {
+//   const temp = await db.Dev.findById(dev);
+//   temp.games.remove(delGame);
+//   temp.save();
+// })
 const destroy = (req, res) => {
   db.Comment.findByIdAndDelete(req.params.id, (err, deletedComment) => {
     if (err) console.log("Error in comment#destroy:", err);
-
-    // if(!deletedComment) return res.status(200).json({ "message": "No comment with that id found in db" });
-
     res.status(200).json({ comment: deletedComment });
   });
 };

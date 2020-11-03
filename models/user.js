@@ -8,6 +8,11 @@ const userSchema = new Schema(
       require: true,
       unique: true,
     },
+    profileImg: {
+      type: String,
+      require: false,
+      unique: false,
+    },
     email: {
       type: String,
       require: true,
@@ -15,6 +20,7 @@ const userSchema = new Schema(
     },
     password: { type: String, required: true },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+    comments:[{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }]
   },
   {
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
