@@ -21,7 +21,7 @@ const show = (req, res) => {
 const create = async (req, res) => {
   let userId = req.userId;
   let user = await db.User.findById(userId)
-  console.log(userId, "************************", user)
+  console.log(req, "************************", user)
   db.Comment.create(req.body, (err, createdComment) => {
       if (err) return console.log("Error in comment#create:", err);
       user.comments.push(createdComment.id);
@@ -57,9 +57,18 @@ const update = (req, res) => {
 //   temp.games.remove(delGame);
 //   temp.save();
 // })
-const destroy = (req, res) => {
+const destroy = async (req, res) => {
+  let user = await db.User.findById(req.userId);
+
+
+
+  
+  
+  
   db.Comment.findByIdAndDelete(req.params.id, (err, deletedComment) => {
     if (err) console.log("Error in comment#destroy:", err);
+    user.comments.remove(deletedComment.id)
+    user.save()
     res.status(200).json({ comment: deletedComment });
   });
 };
