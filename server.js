@@ -18,11 +18,12 @@ app.get("/", (req, res)=>{
     res.send("")
 })
 
+// Comment Routes
+app.use("/api/v1/comments", routes.comments)
+
 // Post Route
 app.use("/api/v1/post", routes.post)
 
-// Comment Routes
-app.use("/api/v1/comments", routes.comments)
 
 // Auth Routes
 app.use("/api/v1/auth", routes.auth);

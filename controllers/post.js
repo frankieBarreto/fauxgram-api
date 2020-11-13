@@ -13,8 +13,17 @@ const index = (req, res) => {
     });
 };
 
+const user = (req, res) => {
+  db.Post.find({user: req.params.id})
+    .exec((err, userPosts) => {
+      if (err) console.log("Error in post#index:", err);
+
+      res.status(200).json({ post: userPosts });
+    });
+};
+
 const show = (req, res) => {
-  // req.params.is to show single post
+
   db.Post.findById(req.params.id)
     .populate("user comments")
     .exec((err, foundPost) => {
@@ -25,13 +34,12 @@ const show = (req, res) => {
 };
 
 const create = async (req, res) => {
-  console.log(req);
   let userId = req.userId;
   let user = await db.User.findById(userId);
 
   db.Post.create(req.body, (err, createdPost) => {
     if (err) console.log("Error in post#create:", err);
-
+    console.log("----------->",req.body);
     user.posts.push(createdPost.id);
     user.save();
     createdPost.user = userId;
@@ -54,47 +62,27 @@ const update = (req, res) => {
   );
 };
 
-// TODO MAKE SURE THE COMMENTS AND ID IS ALSO DELETED
 const destroy = async (req, res) => {
-  const foundPost = await db.Post.findById(req.params.id).populate({
-    path: "comments",
-    populate: {
-      path: "user",
-      model: "User",
-    },
-  });
-  const user = await db.User.findById(req.userId);
-  user.posts.remove(foundPost.id);
-  user.save();
-  // const foundComment = db.Comment.findById(foundPost.comments)
-  // const foundComments = db.Comment.find({post: foundPost.id})
-
-  const arr = foundPost.comments;
-
-  for (var i in arr) {
-    let comment = arr[i];
-    comment.user.comments.remove(comment)
-    comment.user.save()
-    await db.Comment.findByIdAndDelete(comment);
+  try {
+    const deletedPost = await db.Post.findByIdAndDelete(req.params.id);
+    const foundUser = await db.User.findById(deletedPost.user);
+    foundUser.posts.remove(deletedPost);
+    foundUser.save();
+    console.log(deletedPost)
+    // const deletedComments = db.Comment.deleteMany({ post: deletedPost._id });
+    
+    res.status(200).json({
+      data:deletedPost
+    })
+  } catch (err) {
+    return console.log(err);
   }
-
-  // console.log("----------------------------------------------",foundComments)
-  // console.log("-->foundPost-->",foundPost);
-  // const foundUser = await db.User.findById(foundPost.user);
-  // console.log("-->foundUser-->",foundUser);
-  // foundUser.remove(foundPost)
-  // foundComment.remove(foundPost)
-
-  await db.Post.findByIdAndDelete(req.params.id, (err, deletedPost) => {
-    if (err) console.log(`Error in post#destroy: `, err);
-    console.log(deletedPost);
-    res.status(200).json({ post: deletedPost });
-  });
 };
 
 module.exports = {
   index,
   show,
+  user,
   create,
   update,
   destroy,

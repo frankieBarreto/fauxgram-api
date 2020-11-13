@@ -11,3 +11,4 @@ router.delete("/:id", authRequired, ctrl.comments.destroy);
 
 // exports
 module.exports = router;
+ 

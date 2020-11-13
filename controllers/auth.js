@@ -57,7 +57,7 @@ const login = async (req, res) => {
         },
         "super_secret_key",
         {
-          expiresIn: "70h",// TODO fix later
+          expiresIn: "70h",
         }
       );
 
@@ -87,7 +87,6 @@ const login = async (req, res) => {
 module.exports = {
   register,
   login,
-  // logout, // not needed 
 };
 
 

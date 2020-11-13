@@ -2,8 +2,7 @@ const db = require("../models");
 
 const show = async (req, res) => {
     try {
-        const foundUser = await db.User.findById(req.userId);
-
+        const foundUser = await db.User.findById(req.userId).populate("posts comments");
         res.status(200).json({ status: 200, data: foundUser});
     } catch (err) {
         return res.status(500).json({

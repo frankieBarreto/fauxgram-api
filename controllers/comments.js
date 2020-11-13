@@ -5,7 +5,6 @@ const index = (req, res) => {
     .populate("user")
     .exec((err, foundComments) => {
       if (err) console.log("Error in comments#index:", err);
-
       res.status(200).json({ comment: foundComments });
     });
 };
@@ -14,25 +13,26 @@ const show = (req, res) => {
   db.Comment.findById(req.body, (err, foundComment) => {
     if (err) console.log("Error in comment#show:", err);
 
-    res.status(200).json({ comment: foundComment });
+    res.status(200).json({ "comment": foundComment });
   });
 };
 
 const create = async (req, res) => {
   let userId = req.userId;
   let user = await db.User.findById(userId)
-  console.log(req, "************************", user)
   db.Comment.create(req.body, (err, createdComment) => {
       if (err) return console.log("Error in comment#create:", err);
+      console.log("from creatComments-api:", createdComment)
       user.comments.push(createdComment.id);
       createdComment.user = userId;
       user.save();
       createdComment.save();
-
+      
       db.Post.findById(createdComment.post, (err, foundPost)=>{
-          if(err) return console.log("Error in comment/post#create:",err)
-          foundPost.comments.push(createdComment)
-          foundPost.save()
+        if(err) return console.log("Error in comment/post#create:",err)
+        console.log("2from creatComments-api:", foundPost)
+          // foundPost.comments.push(createdComment)
+          // foundPost.save()
           res.status(201).json({ comment: createdComment });
       })
   });
@@ -51,26 +51,16 @@ const update = (req, res) => {
   );
 };
 
-//TODO make sure once post is deleted comments are also removed
-// delGame.dev.forEach(async (dev) => {
-//   const temp = await db.Dev.findById(dev);
-//   temp.games.remove(delGame);
-//   temp.save();
-// })
+
 const destroy = async (req, res) => {
-  let user = await db.User.findById(req.userId);
-
-
-
-  
-  
-  
-  db.Comment.findByIdAndDelete(req.params.id, (err, deletedComment) => {
-    if (err) console.log("Error in comment#destroy:", err);
-    user.comments.remove(deletedComment.id)
-    user.save()
-    res.status(200).json({ comment: deletedComment });
-  });
+  try {
+    let deletedComment = await db.Comment.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      data: deletedComment
+    })
+  } catch(err) {
+    return console.log(err)
+  }
 };
 
 module.exports = {
